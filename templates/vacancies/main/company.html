@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'vacancies/base.html' %}
 {% block title %}Карточка компании{% endblock %}
 {% block container %}
 {% load static %}
@@ -13,7 +13,7 @@
     <p class="text-center pt-1">Компания, {{ company.location }}, {{ vacancies|length|vacancy_declension }}</p>
     <div class="row mt-5">
       <div class="col-12 col-lg-8 offset-lg-2 m-auto">
-        {% include 'vacancy_card.html' %}
+        {% include 'vacancies/main/vacancy_card.html' %}
       </div>
     </div>
   </section>
