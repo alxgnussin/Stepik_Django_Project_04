@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpResponseNotFound, HttpResponseServerError, Http404
 from django.shortcuts import render
@@ -55,22 +57,6 @@ def vacancy_view(request, job_id):
     return render(request, 'vacancies/main/vacancy.html', {
         'vacancy': vacancy,
     })
-
-
-def vacancy_send_view(request, vacancy_id):
-    return render(request, 'send.html')
-
-
-def my_company_view(request):
-    pass
-
-
-def my_vacancies_view(request):
-    pass
-
-
-def my_vacancy_view(request, vacancy_id):
-    pass
 
 
 def custom_handler404(request, exception):

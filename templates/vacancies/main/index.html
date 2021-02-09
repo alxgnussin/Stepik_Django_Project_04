@@ -54,7 +54,11 @@
       <div class="col-6 col-md-6 col-lg-3">
         <div class="card pt-4 text-center mb-4">
           <a href="{% url 'company' company_id=company.id %}" style="max-width: 150px;" class="mx-auto d-block">
+            {% if company.logo %}
             <img class="mx-auto d-block mw-100" src="{{ company.logo.url }}" alt="{{ company.title}}"/>
+            {% else %}
+            {{ company.title}}
+            {% endif %}
             <div class="card-body">
             <p class="card-text">{{ company.num_vacancy|vacancy_declension }}</p>
             </div>
