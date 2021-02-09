@@ -1,22 +1,24 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Row, Column
-from django import forms
+
 from django.contrib.auth.password_validation import validate_password
 
+from django.forms import Form, CharField, ValidationError, PasswordInput, ImageField, IntegerField, Textarea
 
-class RegisterForm(forms.Form):
-    username = forms.CharField(min_length=3, max_length=20, label='Логин')
-    first_name = forms.CharField(max_length=20, label='Имя')
-    last_name = forms.CharField(max_length=20, label='Фамилия')
-    password = forms.CharField(widget=forms.PasswordInput, label='Пароль')
-    confirm = forms.CharField(widget=forms.PasswordInput, label='Проверка')
+
+class RegisterForm(Form):
+    username = CharField(min_length=3, max_length=20, label='Логин')
+    first_name = CharField(max_length=20, label='Имя')
+    last_name = CharField(max_length=20, label='Фамилия')
+    password = CharField(widget=PasswordInput, label='Пароль')
+    confirm = CharField(widget=PasswordInput, label='Проверка')
 
     def clean_confirm(self):
         p1 = self.cleaned_data['password']
         p2 = self.cleaned_data['confirm']
 
         if p1 != p2:
-            raise forms.ValidationError('Пароли должны совпадать.', code='password_mismatch')
+            raise ValidationError('Пароли должны совпадать.', code='password_mismatch')
 
         validate_password(p1)
 
@@ -34,17 +36,17 @@ class RegisterForm(forms.Form):
         self.helper.field_class = "col-lg-9"
 
 
-class LoginForm(forms.Form):
-    username = forms.CharField(min_length=3, max_length=20, label='Логин')
-    password = forms.CharField(widget=forms.PasswordInput)
+class LoginForm(Form):
+    username = CharField(min_length=3, max_length=20, label='Логин')
+    password = CharField(widget=PasswordInput)
 
 
-class CompanyForm(forms.Form):
-    title = forms.CharField(max_length=20, label='Название компании')
-    location = forms.CharField(max_length=20, label='География')
-    logo = forms.ImageField(label='Загрузить другой логотип', required=False)
-    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 4}), label='Информация о компании')
-    employee_count = forms.IntegerField(label='Количество человек в компании')
+class CompanyForm(Form):
+    title = CharField(max_length=20, label='Название компании')
+    location = CharField(max_length=20, label='География')
+    logo = ImageField(label='Загрузить новый логотип', required=False)
+    description = CharField(widget=Textarea(attrs={'rows': 4}), label='Информация о компании')
+    employee_count = IntegerField(label='Количество человек в компании')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -65,3 +67,21 @@ class CompanyForm(forms.Form):
             'description'
         )
 
+
+class ApplicationForm(Form):
+    written_username = CharField(max_length=20, label='Вас зовут')
+    written_phone = CharField(max_length=20, label='Ваш телефон')
+    written_cover_letter = CharField(widget=Textarea(attrs={'rows': 4}), label='Сопроводительное письмо')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Записаться на собеседование', css_class='float-right'))
+
+        self.helper.layout = Layout(
+            'written_username',
+            'written_phone',
+            'written_cover_letter'
+        )

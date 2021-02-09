@@ -24,6 +24,7 @@
               {% load crispy_forms_tags %}{% csrf_token %}
               {% if logo %}
               <p><img class="mx-auto d-block mw-100" src="{{ logo.url }}"/></p>
+              <p></p>
               {% endif %}
               {% crispy form %}
             </section>

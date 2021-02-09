@@ -4,7 +4,8 @@ from django.db.models import Count
 from django.http import HttpResponseNotFound, HttpResponseServerError, Http404
 from django.shortcuts import render
 
-from vacancies.models import Specialty, Company, Vacancy
+from vacancies.forms import ApplicationForm
+from vacancies.models import Specialty, Company, Vacancy, Application
 
 
 def main_view(request):
@@ -53,10 +54,30 @@ def vacancy_view(request, job_id):
         vacancy = Vacancy.objects.get(id=job_id)
     except:
         raise Http404()
+    user = get_user(request)
+    if request.method == 'GET':
+        form = ApplicationForm()
+        if not user.is_anonymous:
+            written_username = f'{user.first_name} {user.last_name}'
+            form.initial = {
+                'written_username': written_username
+            }
+            return render(request, 'vacancies/main/vacancy.html', {'vacancy': vacancy, 'form': form})
 
-    return render(request, 'vacancies/main/vacancy.html', {
-        'vacancy': vacancy,
-    })
+    form = ApplicationForm(request.POST)
+    if not form.is_valid():
+        return render(request, 'vacancies/main/vacancy.html', {'vacancy': vacancy, 'form': form})
+    if user.is_anonymous:
+        user = None
+    Application.objects.create(
+        written_username=form.cleaned_data['written_username'],
+        written_phone=form.cleaned_data['written_phone'],
+        written_cover_letter=form.cleaned_data['written_cover_letter'],
+        vacancy=vacancy,
+        user=user
+    )
+
+    return render(request, 'vacancies/main/sent.html', {'job_id': job_id})
 
 
 def custom_handler404(request, exception):

@@ -35,7 +35,8 @@ def my_company_form_view(request):
                 'description': company.description,
                 'employee_count': company.employee_count
             }
-        return render(request, 'vacancies/user/company_edit.html', {'form': form, 'logo': company.logo})
+            return render(request, 'vacancies/user/company_edit.html', {'form': form, 'logo': company.logo})
+        return render(request, 'vacancies/user/company_edit.html', {'form': form})
 
     form = CompanyForm(request.POST, request.FILES)
     if not form.is_valid():
@@ -70,6 +71,7 @@ def my_company_form_view(request):
 
 @login_required
 def my_vacancies_view(request):
+
     pass
 
 
