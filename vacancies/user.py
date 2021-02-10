@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Count
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from vacancies.forms import CompanyForm
-from vacancies.models import Company
+from vacancies.forms import CompanyForm, VacancyForm
+from vacancies.models import Company, Vacancy, Application
 
 
 @login_required
@@ -25,7 +27,7 @@ def my_company_view(request):
 @login_required
 def my_company_form_view(request):
     user = get_user(request)
-    company = Company.objects.filter(owner=user).first()
+    company = user.companies.first()
     if request.method == 'GET':
         form = CompanyForm()
         if company:
@@ -42,39 +44,88 @@ def my_company_form_view(request):
     if not form.is_valid():
         return render(request, 'vacancies/user/company_edit.html', {'form': form})
 
-    title = form.cleaned_data['title']
-    location = form.cleaned_data['location']
-    logo = form.cleaned_data['logo']
-    description = form.cleaned_data['description']
-    employee_count = form.cleaned_data['employee_count']
-    owner = user
+    # title = form.cleaned_data['title']
+    # location = form.cleaned_data['location']
+    # logo = form.cleaned_data['logo']
+    # description = form.cleaned_data['description']
+    # employee_count = form.cleaned_data['employee_count']
+    # owner = user
     if company:
-        company.title = title
-        company.location = location
-        if logo:
-            company.logo = logo
-        company.description = description
-        company.employee_count = employee_count
-        company.owner = owner
+        company.title = form.cleaned_data['title']
+        company.location = form.cleaned_data['location']
+        if form.cleaned_data['logo']:
+            company.logo = form.cleaned_data['logo']
+        company.description = form.cleaned_data['description']
+        company.employee_count = form.cleaned_data['employee_count']
+        company.owner = user
     else:
         company = Company(
-            title=title,
-            location=location,
-            logo=logo,
-            description=description,
-            employee_count=employee_count,
-            owner=owner
+            title=form.cleaned_data['title'],
+            location=form.cleaned_data['location'],
+            logo=form.cleaned_data['logo'],
+            description=form.cleaned_data['description'],
+            employee_count=form.cleaned_data['employee_count'],
+            owner=user
         )
     company.save()
     return redirect(reverse('my_company_form') + '?submitted=True')
 
 
 @login_required
-def my_vacancies_view(request):
+def my_vacancies_list_view(request):
+    user = get_user(request)
+    user_company = user.companies.first()
+    vacancies_list = None
+    if user_company:
+        vacancies_list = user_company.vacancies.annotate(res_count=Count('applications')).all()
 
-    pass
+    return render(request, 'vacancies/user/vacancy_list.html', {'vacancies': vacancies_list})
 
 
 @login_required
-def my_vacancy_view(request, vacancy_id):
-    pass
+def my_vacancy_form_view(request, job_id=None):
+    user = get_user(request)
+    user_company = user.companies.first()
+    vacancy = None
+
+    if request.method == 'GET':
+        form = VacancyForm()
+        if job_id:
+            vacancy = Vacancy.objects.filter(id=job_id).first()
+
+        if vacancy:
+            form.initial = {
+                'title': vacancy.title,
+                'specialty': vacancy.specialty,
+                'skills': vacancy.skills,
+                'description': vacancy.description,
+                'salary_min': vacancy.salary_min,
+                'salary_max': vacancy.salary_max,
+            }
+
+        return render(request, 'vacancies/user/vacancy_edit.html', {'form': form, 'job_id': vacancy.id})
+
+    form = VacancyForm(request.POST)
+
+    if not form.is_valid():
+        return render(request, 'vacancies/user/vacancy_edit.html', {'form': form})
+
+    if vacancy:
+        vacancy.title = form.cleaned_data['title'],
+        vacancy.specialty = form.cleaned_data['specialty'],
+        vacancy.skills = form.cleaned_data['skills'],
+        vacancy.description = form.cleaned_data['description'],
+        vacancy.salary_min = form.cleaned_data['salary_min'],
+        vacancy.salary_max = form.cleaned_data['salary_max'],
+    else:
+        vacancy = Vacancy(
+            title=form.cleaned_data['title'],
+            specialty=form.cleaned_data['specialty'],
+            skills=form.cleaned_data['skills'],
+            description=form.cleaned_data['description'],
+            salary_min=form.cleaned_data['salary_min'],
+            salary_max=form.cleaned_data['salary_max'],
+            company=user_company
+        )
+    vacancy.save()
+    return redirect(reverse('my_vacancy_form', {'job_id': vacancy.id}) + '?submitted=True')

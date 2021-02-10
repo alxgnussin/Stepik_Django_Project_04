@@ -3,7 +3,10 @@ from crispy_forms.layout import Submit, Layout, Row, Column
 
 from django.contrib.auth.password_validation import validate_password
 
-from django.forms import Form, CharField, ValidationError, PasswordInput, ImageField, IntegerField, Textarea
+from django.forms import Form, CharField, ValidationError, PasswordInput, ImageField, IntegerField, Textarea, \
+    ModelChoiceField
+
+from vacancies.models import Specialty
 
 
 class RegisterForm(Form):
@@ -64,7 +67,7 @@ class CompanyForm(Form):
                 Column('employee_count', css_class='form-group col-md-6 mb-0'),
                 Column('location', css_class='form-group col-md-6 mb-0'),
             ),
-            'description'
+            'description',
         )
 
 
@@ -83,5 +86,36 @@ class ApplicationForm(Form):
         self.helper.layout = Layout(
             'written_username',
             'written_phone',
-            'written_cover_letter'
+            'written_cover_letter',
+        )
+
+
+class VacancyForm(Form):
+    title = CharField(max_length=50, label='Название вакансии')
+    specialty = ModelChoiceField(required=True, queryset=Specialty.objects, label='Специализация')
+    # company = IntegerField(label='Требуемые навыки')
+    skills = CharField(widget=Textarea(attrs={'rows': 2}), label='Требуемые навыки')
+    description = CharField(widget=Textarea(attrs={'rows': 6}), label='Описание вакансии')
+    salary_min = IntegerField(label='Зарплата от')
+    salary_max = IntegerField(label='Зарплата до')
+
+    # posted = DateField(, label='Требуемые навыки')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Сохранить', css_class='float-right'))
+
+        self.helper.layout = Layout(
+            Row(
+                Column('title', css_class='form-group col-md-6 mb-0'),
+                Column('specialty', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
+                Column('salary_min', css_class='form-group col-md-6 mb-0'),
+                Column('salary_max', css_class='form-group col-md-6 mb-0'),
+            ),
+            'skills',
+            'description',
         )
