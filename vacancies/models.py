@@ -56,7 +56,7 @@ class Vacancy(Model):
 
 
 class Application(Model):
-    written_username = CharField(max_length=20)
+    written_username = CharField(max_length=50)
     written_phone = CharField(max_length=20)
     written_cover_letter = TextField()
     vacancy = ForeignKey(Vacancy, on_delete=CASCADE, related_name='applications')
@@ -100,9 +100,4 @@ class Resume(Model):
     phone = CharField(max_length=20, default='+7')
     email = EmailField(null=True)
 
-    def __str__(self):
-        return self.title
 
-    class Meta:
-        verbose_name = 'Резюме'
-        ordering = ['title']

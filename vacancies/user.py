@@ -73,9 +73,12 @@ def my_vacancy_form_view(request, job_id=None):
     user = get_user(request)
     user_company = user.companies.first()
     vacancy = None
+    applications = None
 
     if job_id:
         vacancy = Vacancy.objects.filter(id=job_id).first()
+    if vacancy:
+        applications = vacancy.applications.all()
 
     if request.method == 'GET':
         form = VacancyForm()
@@ -90,12 +93,12 @@ def my_vacancy_form_view(request, job_id=None):
                 'salary_max': vacancy.salary_max,
             }
 
-        return render(request, 'vacancies/user/vacancy_edit.html', {'form': form, 'job_id': vacancy.id})
+        return render(request, 'vacancies/user/vacancy_edit.html', {'form': form, 'applications': applications})
 
     form = VacancyForm(request.POST)
 
     if not form.is_valid():
-        return render(request, 'vacancies/user/vacancy_edit.html', {'form': form})
+        return render(request, 'vacancies/user/vacancy_edit.html', {'form': form, 'applications': applications})
 
     if vacancy:
         vacancy.title = form.cleaned_data['title']

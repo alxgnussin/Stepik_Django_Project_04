@@ -73,7 +73,7 @@ class CompanyForm(Form):
 
 
 class ApplicationForm(Form):
-    written_username = CharField(max_length=20, label='Вас зовут')
+    written_username = CharField(max_length=50, label='Вас зовут')
     written_phone = CharField(max_length=20, label='Ваш телефон')
     written_cover_letter = CharField(widget=Textarea(attrs={'rows': 4}), label='Сопроводительное письмо')
 
