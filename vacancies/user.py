@@ -1,19 +1,11 @@
 from django.contrib.auth import get_user
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.db.models import Count
-from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from vacancies.forms import CompanyForm, VacancyForm
-from vacancies.models import Company, Vacancy, Application
-
-
-@login_required
-def vacancy_send_view(request, vacancy_id):
-    user = get_user(request)
-    pass
+from vacancies.models import Company, Vacancy
 
 
 @login_required
@@ -44,12 +36,6 @@ def my_company_form_view(request):
     if not form.is_valid():
         return render(request, 'vacancies/user/company_edit.html', {'form': form})
 
-    # title = form.cleaned_data['title']
-    # location = form.cleaned_data['location']
-    # logo = form.cleaned_data['logo']
-    # description = form.cleaned_data['description']
-    # employee_count = form.cleaned_data['employee_count']
-    # owner = user
     if company:
         company.title = form.cleaned_data['title']
         company.location = form.cleaned_data['location']
