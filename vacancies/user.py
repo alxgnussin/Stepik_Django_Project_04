@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from vacancies.forms import CompanyForm, VacancyForm
+from vacancies.forms import CompanyForm, VacancyForm, ResumeForm
 from vacancies.models import Company, Vacancy
 
 
@@ -116,3 +116,21 @@ def my_vacancy_form_view(request, job_id=None):
         )
     vacancy.save()
     return redirect(reverse('my_vacancy_form', args=[vacancy.id]) + '?submitted=True')
+
+
+@login_required
+def my_resume_list_view(request):
+    user = get_user(request)
+    resumes_list = user.resumes.all()
+    if len(resumes_list) > 0:
+        return render(request, 'vacancies/user/resumes.html', {'resumes_list': resumes_list})
+    return render(request, 'vacancies/user/resume_create.html')
+
+
+@login_required
+def my_resume_form_view(request, pk=None):
+    user = get_user(request)
+    if request.method == 'GET':
+        form = ResumeForm()
+
+        return render(request, 'vacancies/user/vacancy_edit.html', {'form': form})

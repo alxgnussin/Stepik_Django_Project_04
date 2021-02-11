@@ -3,10 +3,11 @@ from crispy_forms.layout import Submit, Layout, Row, Column
 
 from django.contrib.auth.password_validation import validate_password
 
-from django.forms import Form, CharField, ValidationError, PasswordInput, ImageField, IntegerField, Textarea, \
-    ModelChoiceField
 
-from vacancies.models import Specialty
+from django.forms import Form, CharField, ValidationError, PasswordInput, ImageField, IntegerField, Textarea, \
+    ModelChoiceField, EmailField
+
+from vacancies.models import Specialty, Status, Grade
 
 
 class RegisterForm(Form):
@@ -33,7 +34,7 @@ class RegisterForm(Form):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Зарегистрироваться', css_class='float-right'))
-        # включаем стили
+
         self.helper.form_class = "container form-horizontal mt-5"
         self.helper.label_class = "col-sm-3 col-form-label"
         self.helper.field_class = "col-lg-9"
@@ -93,13 +94,11 @@ class ApplicationForm(Form):
 class VacancyForm(Form):
     title = CharField(max_length=50, label='Название вакансии')
     specialty = ModelChoiceField(required=True, queryset=Specialty.objects, label='Специализация')
-    # company = IntegerField(label='Требуемые навыки')
     skills = CharField(widget=Textarea(attrs={'rows': 2}), label='Требуемые навыки')
     description = CharField(widget=Textarea(attrs={'rows': 6}), label='Описание вакансии')
     salary_min = IntegerField(label='Зарплата от')
     salary_max = IntegerField(label='Зарплата до')
 
-    # posted = DateField(, label='Требуемые навыки')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -118,4 +117,49 @@ class VacancyForm(Form):
             ),
             'skills',
             'description',
+        )
+
+
+class ResumeForm(Form):
+    # first_name = CharField(max_length=20, label='Имя')
+    # last_name = CharField(max_length=20, label='Фамилия')
+    phone = CharField(max_length=20, label='Телефон')
+    email = EmailField(required=False, label='Почтовый адрес')
+    salary = IntegerField(label='Ожидаемая зарплата')
+    education = CharField(widget=Textarea(attrs={'rows': 3}), label='Образование')
+    experience = CharField(widget=Textarea(attrs={'rows': 4}), label='Опыт работы')
+    portfolio = CharField(max_length=255, label='Ссылка на портфолио')
+    title = CharField(max_length=50, empty_value='Резюме по умолчанию', label='Желаемая должность')
+    status = ModelChoiceField(required=True, queryset=Status.objects, label='Статус соискателя')
+    grade = ModelChoiceField(required=True, queryset=Grade.objects, label='Квалификация')
+    specialty = ModelChoiceField(required=True, queryset=Specialty.objects, label='Специализация')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Сохранить', css_class='float-right'))
+
+        self.helper.layout = Layout(
+            'title',
+            # Row(
+            #     Column('first_name', css_class='form-group col-md-6 mb-0'),
+            #     Column('last_name', css_class='form-group col-md-6 mb-0'),
+            # ),
+            Row(
+                Column('phone', css_class='form-group col-md-6 mb-0'),
+                Column('email', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
+                Column('status', css_class='form-group col-md-6 mb-0'),
+                Column('salary', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
+                Column('specialty', css_class='form-group col-md-6 mb-0'),
+                Column('grade', css_class='form-group col-md-6 mb-0'),
+            ),
+            'education',
+            'experience',
+            'portfolio',
         )

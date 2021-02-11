@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from django.db.models import Model, CharField, ImageField, TextField, IntegerField, ForeignKey, CASCADE, DateField
+from django.db.models import Model, CharField, ImageField, TextField, IntegerField, ForeignKey, CASCADE, DateField, \
+    EmailField
 
 from junior_developers.settings import MEDIA_COMPANY_IMAGE_DIR, MEDIA_SPECIALITY_IMAGE_DIR
 
@@ -45,6 +46,14 @@ class Vacancy(Model):
     salary_max = IntegerField()
     posted = DateField(auto_now=True)
 
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Вакансия'
+        verbose_name_plural = 'Вакансии'
+        ordering = ['title']
+
 
 class Application(Model):
     written_username = CharField(max_length=20)
@@ -57,9 +66,25 @@ class Application(Model):
 class Status(Model):
     title = CharField(max_length=32)
 
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Статус соискателя'
+        verbose_name_plural = 'Статусы соискателя'
+        ordering = ['title']
+
 
 class Grade(Model):
     title = CharField(max_length=20)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Квалификация'
+        verbose_name_plural = 'Квалификации'
+        ordering = ['title']
 
 
 class Resume(Model):
@@ -71,4 +96,13 @@ class Resume(Model):
     education = TextField()
     experience = TextField()
     portfolio = CharField(max_length=255)
+    title = CharField(max_length=50, default='Резюме по умолчанию')
+    phone = CharField(max_length=20, default='+7')
+    email = EmailField(null=True)
 
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Резюме'
+        ordering = ['title']

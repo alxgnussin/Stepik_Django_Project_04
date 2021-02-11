@@ -19,9 +19,9 @@ from django.contrib import admin
 from django.urls import path
 
 from vacancies.authentication import register_view, auth_view, logout_view
-from vacancies.user import my_company_view, my_company_form_view, my_vacancies_list_view, my_vacancy_form_view
 from vacancies.main import main_view, jobs_views, company_view, vacancy_view, custom_handler404, custom_handler500
-
+from vacancies.user import my_company_view, my_company_form_view, my_vacancies_list_view, my_vacancy_form_view, \
+    my_resume_list_view, my_resume_form_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,6 +38,10 @@ urlpatterns = [
     path('my_vacancy_list', my_vacancies_list_view, name='my_vacancy_list'),
     path('my_vacancy_form', my_vacancy_form_view, name='my_vacancy_create'),
     path('my_vacancy_form/<int:job_id>', my_vacancy_form_view, name='my_vacancy_form'),
+    path('my_resumes_list', my_resume_list_view, name='resumes'),
+    path('my_resume_form', my_resume_form_view, name='my_resume_create'),
+    path('my_resume_form/<int:resume_id>', my_resume_form_view, name='my_resume_form'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
