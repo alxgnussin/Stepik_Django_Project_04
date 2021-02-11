@@ -19,7 +19,6 @@ class Specialty(models.Model):
 
 
 class Company(models.Model):
-    id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=20)
     location = models.CharField(max_length=20)
     logo = models.ImageField(upload_to=MEDIA_COMPANY_IMAGE_DIR, null=True)
@@ -37,7 +36,6 @@ class Company(models.Model):
 
 
 class Vacancy(models.Model):
-    id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=50)
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name="vacancies")
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="vacancies")

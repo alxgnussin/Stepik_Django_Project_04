@@ -1,11 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 
 from vacancies.forms import RegisterForm, LoginForm
+from vacancies.utility import anonymous_check
 
 
+@user_passes_test(anonymous_check, login_url='/')
 def register_view(request):
     if request.method == 'GET':
         form = RegisterForm()

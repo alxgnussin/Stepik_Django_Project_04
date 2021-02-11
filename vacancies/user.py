@@ -88,10 +88,11 @@ def my_vacancy_form_view(request, job_id=None):
     user_company = user.companies.first()
     vacancy = None
 
+    if job_id:
+        vacancy = Vacancy.objects.filter(id=job_id).first()
+
     if request.method == 'GET':
         form = VacancyForm()
-        if job_id:
-            vacancy = Vacancy.objects.filter(id=job_id).first()
 
         if vacancy:
             form.initial = {
@@ -111,12 +112,12 @@ def my_vacancy_form_view(request, job_id=None):
         return render(request, 'vacancies/user/vacancy_edit.html', {'form': form})
 
     if vacancy:
-        vacancy.title = form.cleaned_data['title'],
-        vacancy.specialty = form.cleaned_data['specialty'],
-        vacancy.skills = form.cleaned_data['skills'],
-        vacancy.description = form.cleaned_data['description'],
-        vacancy.salary_min = form.cleaned_data['salary_min'],
-        vacancy.salary_max = form.cleaned_data['salary_max'],
+        vacancy.title = form.cleaned_data['title']
+        vacancy.specialty = form.cleaned_data['specialty']
+        vacancy.skills = form.cleaned_data['skills']
+        vacancy.description = form.cleaned_data['description']
+        vacancy.salary_min = form.cleaned_data['salary_min']
+        vacancy.salary_max = form.cleaned_data['salary_max']
     else:
         vacancy = Vacancy(
             title=form.cleaned_data['title'],
@@ -128,4 +129,4 @@ def my_vacancy_form_view(request, job_id=None):
             company=user_company
         )
     vacancy.save()
-    return redirect(reverse('my_vacancy_form', {'job_id': vacancy.id}) + '?submitted=True')
+    return redirect(reverse('my_vacancy_form', args=[vacancy.id]) + '?submitted=True')
