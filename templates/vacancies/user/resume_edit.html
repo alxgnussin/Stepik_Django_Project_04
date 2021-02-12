@@ -3,9 +3,16 @@
 {% block container %}
 
   <main class="container mt-3 pb-5">
-    <section class="col-12 col-lg-6 offset-lg-3 mt-5 card">
+    <section class="col-12 col-lg-8 offset-lg-2 mt-3 card">
       <div class="card-body px-3 pb-4">
-        <h1 class="h4 pt-2 pb-3">Мое резюме</h1>
+        <div class="row mb-3">
+          <div class="col-6"><h2 class="h4 pt-2 pb-3">Моё резюме</h2></div>
+          <div class="col-6">
+            <a href="{% url 'resumes' %}"
+               class="btn btn-outline-info mt-1 float-right"><b>⇐</b> Назад</a>
+          </div>
+        </div>
+<!--        <h1 class="h4 pt-2 pb-3">Мое резюме</h1>-->
 
         {% if request.GET.submitted %}
           <p class="alert alert-info" role="alert">Ваше резюме обновлено!</p>

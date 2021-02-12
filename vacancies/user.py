@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from vacancies.forms import CompanyForm, VacancyForm, ResumeForm
-from vacancies.models import Company, Vacancy
+from vacancies.models import Company, Vacancy, Resume
 
 
 @login_required
@@ -131,9 +131,58 @@ def my_resume_list_view(request):
 
 
 @login_required
-def my_resume_form_view(request, pk=None):
+def my_resume_form_view(request, resume_id=None):
     user = get_user(request)
+    resume = None
+    if resume_id:
+        resume = Resume.objects.filter(id=resume_id).first()
     if request.method == 'GET':
         form = ResumeForm()
+        if resume:
+            form.initial = {
+                'status': resume.status,
+                'grade': resume.grade,
+                'specialty': resume.specialty,
+                'salary': resume.salary,
+                'education': resume.education,
+                'experience': resume.experience,
+                'portfolio': resume.portfolio,
+                'title': resume.title,
+                'phone': resume.phone,
+                'email': resume.email,
+            }
 
-        return render(request, 'vacancies/user/vacancy_edit.html', {'form': form})
+        return render(request, 'vacancies/user/resume_edit.html', {'form': form})
+
+    form = ResumeForm(request.POST)
+
+    if not form.is_valid():
+        return render(request, 'vacancies/user/resume_edit.html', {'form': form})
+
+    if resume:
+        resume.status = form.cleaned_data['status']
+        resume.grade = form.cleaned_data['grade']
+        resume.specialty = form.cleaned_data['specialty']
+        resume.salary = form.cleaned_data['salary']
+        resume.education = form.cleaned_data['education']
+        resume.experience = form.cleaned_data['experience']
+        resume.portfolio = form.cleaned_data['portfolio']
+        resume.title = form.cleaned_data['title']
+        resume.phone = form.cleaned_data['phone']
+        resume.email = form.cleaned_data['email']
+    else:
+        resume = Resume(
+            user=user,
+            status=form.cleaned_data['status'],
+            grade=form.cleaned_data['grade'],
+            specialty=form.cleaned_data['specialty'],
+            salary=form.cleaned_data['salary'],
+            education=form.cleaned_data['education'],
+            experience=form.cleaned_data['experience'],
+            portfolio=form.cleaned_data['portfolio'],
+            title=form.cleaned_data['title'],
+            phone=form.cleaned_data['phone'],
+            email=form.cleaned_data['email'],
+        )
+    resume.save()
+    return redirect(reverse('resumes'))

@@ -95,7 +95,7 @@ class Resume(Model):
     salary = IntegerField()
     education = TextField()
     experience = TextField()
-    portfolio = CharField(max_length=255)
+    portfolio = CharField(max_length=255, null=True)
     title = CharField(max_length=50, default='Резюме по умолчанию')
     phone = CharField(max_length=20, default='+7')
     email = EmailField(null=True)
