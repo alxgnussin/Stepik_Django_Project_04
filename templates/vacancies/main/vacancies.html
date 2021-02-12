@@ -4,12 +4,21 @@
 {% load vacancies_filters %}
 <main class="container mt-3">
   <section>
-    <h1 class="h1 text-center mx-auto mt-4 pt-5" style="font-size: 70px;">
-      <strong>{% if specialty_code %}{{ specialty.title }}{% else %}Все вакансии{% endif %}</strong>
+    <h1 class="h1 text-center mx-auto mt-4 pt-5" >
+      <strong>{% if specialty_code %}{{ specialty.title }}{% else %}Доступные вакансии{% endif %}</strong>
     </h1>
     <p class="text-center pt-1">{{ vacancies|length|vacancy_declension }}</p>
-    <div class="row mt-5">
+    <div class="row mt-3">
       <div class="col-12 col-lg-8 offset-lg-2 m-auto">
+      <form class="form-inline mb-5" action="{% url 'vacancies_all' %}" method="GET">
+        <div class="form-group col-8 col-md-10 pl-0">
+          <input class="form-control w-100" type="search" placeholder="Найти работу или стажировку"
+                 name="query" value="{{ request.GET.query }}">
+        </div>
+        <div class="form-group col-4 col-md-2 pl-0">
+          <button class="btn btn-primary w-100" type="submit">Найти</button>
+        </div>
+      </form>
       {% include 'vacancies/main/vacancy_card.html' %}
       </div>
     </div>

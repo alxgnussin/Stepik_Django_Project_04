@@ -3,7 +3,6 @@ from crispy_forms.layout import Submit, Layout, Row, Column
 
 from django.contrib.auth.password_validation import validate_password
 
-
 from django.forms import Form, CharField, ValidationError, PasswordInput, ImageField, IntegerField, Textarea, \
     ModelChoiceField, EmailField
 
@@ -121,8 +120,6 @@ class VacancyForm(Form):
 
 
 class ResumeForm(Form):
-    # first_name = CharField(max_length=20, label='Имя')
-    # last_name = CharField(max_length=20, label='Фамилия')
     phone = CharField(max_length=20, label='Телефон')
     email = EmailField(required=False, label='Почтовый адрес')
     salary = IntegerField(label='Ожидаемая зарплата')
@@ -143,10 +140,6 @@ class ResumeForm(Form):
 
         self.helper.layout = Layout(
             'title',
-            # Row(
-            #     Column('first_name', css_class='form-group col-md-6 mb-0'),
-            #     Column('last_name', css_class='form-group col-md-6 mb-0'),
-            # ),
             Row(
                 Column('phone', css_class='form-group col-md-6 mb-0'),
                 Column('email', css_class='form-group col-md-6 mb-0'),
@@ -163,3 +156,5 @@ class ResumeForm(Form):
             'experience',
             'portfolio',
         )
+
+

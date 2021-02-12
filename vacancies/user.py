@@ -186,3 +186,14 @@ def my_resume_form_view(request, resume_id=None):
         )
     resume.save()
     return redirect(reverse('resumes'))
+
+
+@login_required
+def applications_list_view(request, job_id):
+    vacancy = Vacancy.objects.filter(id=job_id).first()
+    applications = vacancy.applications.all()
+
+    return render(request, 'vacancies/user/applications_list.html', {
+        'applications': applications,
+        'job_title': vacancy.title,
+    })

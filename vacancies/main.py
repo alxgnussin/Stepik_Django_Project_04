@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import HttpResponseNotFound, HttpResponseServerError, Http404
 from django.shortcuts import render
 
@@ -19,6 +19,7 @@ def main_view(request):
 
 
 def jobs_views(request, specialty_code=None):
+    specialty = None
     if specialty_code:
         try:
             specialty = Specialty.objects.get(code=specialty_code)
@@ -26,8 +27,11 @@ def jobs_views(request, specialty_code=None):
             raise Http404()
         vacancies = Vacancy.objects.filter(specialty__code=specialty_code).all()
     else:
-        specialty = None
-        vacancies = Vacancy.objects.all()
+        search = request.GET.get('query')
+        if search:
+            vacancies = Vacancy.objects.filter(Q(skills__icontains=search) | Q(title__icontains=search)).all()
+        else:
+            vacancies = Vacancy.objects.all()
 
     return render(request, 'vacancies/main/vacancies.html', {
         'vacancies': vacancies,
@@ -47,6 +51,11 @@ def company_view(request, company_id):
         'company': company,
         'vacancies': vacancies,
     })
+
+
+def company_list_view(request):
+    companies = Company.objects.annotate(num_vacancy=Count('vacancies')).all()
+    return render(request, 'vacancies/main/companies.html', {'companies': companies})
 
 
 def vacancy_view(request, job_id):
