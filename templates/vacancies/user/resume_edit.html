@@ -9,10 +9,9 @@
           <div class="col-6"><h2 class="h4 pt-2 pb-3">Моё резюме</h2></div>
           <div class="col-6">
             <a href="{% url 'resumes' %}"
-               class="btn btn-outline-info mt-1 float-right"><b>⇐</b> Назад</a>
+               class="btn btn-outline-info mt-1 float-right">К списку резюме</a>
           </div>
         </div>
-<!--        <h1 class="h4 pt-2 pb-3">Мое резюме</h1>-->
 
         {% if request.GET.submitted %}
           <p class="alert alert-info" role="alert">Ваше резюме обновлено!</p>

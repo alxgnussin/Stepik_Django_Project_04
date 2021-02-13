@@ -40,8 +40,19 @@ class RegisterForm(Form):
 
 
 class LoginForm(Form):
-    username = CharField(min_length=3, max_length=20, label='Логин')
-    password = CharField(widget=PasswordInput)
+    username = CharField(min_length=3, max_length=20, label='Логин:')
+    password = CharField(widget=PasswordInput, label='Пароль:')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Войти', css_class='float-right'))
+
+        self.helper.form_class = "container form-horizontal mt-5"
+        self.helper.label_class = "col-sm-3 col-form-label"
+        self.helper.field_class = "col-lg-9"
 
 
 class CompanyForm(Form):

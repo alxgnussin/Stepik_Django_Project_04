@@ -1,0 +1,9 @@
+<form class="form-inline mb-2" action="{% url 'vacancies_all' %}" method="GET">
+  <div class="form-group col-8 col-md-10 pl-0">
+    <input class="form-control w-100" type="search" placeholder="Найти работу или стажировку"
+          name="query" value="{{ request.GET.query }}">
+  </div>
+  <div class="form-group col-4 col-md-2 pl-0">
+    <button class="btn btn-primary w-100" type="submit">Найти</button>
+  </div>
+</form>

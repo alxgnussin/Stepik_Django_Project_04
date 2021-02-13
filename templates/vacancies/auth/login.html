@@ -1,34 +1,17 @@
 {% extends 'vacancies/base.html' %}
-{% block title %}Поиск сотрудников{% endblock %}
+{% block title %}Авторизация пользователя{% endblock %}
 {% block container %}
-  <main class="container">
-    <div class="row">
-      <div class="col-8 col-lg-4 offset-2 offset-lg-4">
-        <form class="form-signin pt-5" method="post">
-          {% csrf_token %}
-          <div class="text-center mt-5 b-1">
-
-            <h1 class="h3 mb-3 font-weight-normal">Джуманджи</h1>
-            <p class="h5 font-weight-light {% if message %} alert alert-danger" role="alert">{{ message }}
-              {% else %}">Войдите, чтобы управлять{% endif %}</p>
-          </div>
-          <div class="mt-5 form-label-group">
-            <p class="text-muted">Логин</p>
-            <input type="text" id="inputLogin" class="form-control" name="username" required autofocus>
-            <label for="inputLogin"></label>
-          </div>
-          <div class="form-label-group">
-            <p class="text-muted"> Пароль</p>
-            <input type="password" id="inputPassword" class="form-control" name="password" required>
-            <label for="inputPassword"></label>
-          </div>
-          <div class="checkbox mb-3"></div>
-          <button class="btn btn-primary btn-lg btn-block" type="submit">Войти</button>
-        </form>
-
-        <div class="mt-4 text-center"><p>Нет аккаунта? <a href="{% url 'signup' %}">Зарегистрируйтесь!</a></p></div>
-
+<main class="container">
+  <div class="row">
+    <div class="col-8 col-lg-4 offset-2 offset-lg-4">
+      <div class="text-center my-5 b-1">
+        <p class="h5 font-weight-light {% if message %} alert alert-danger" role="alert">{{ message }}
+          {% else %}">Войдите, чтобы управлять{% endif %}</p>
       </div>
+      {% load crispy_forms_tags %}{% csrf_token %}
+      {% crispy form %}
+      <div class="mt-4 text-center"><p>Нет аккаунта? <a href="{% url 'signup' %}">Зарегистрируйтесь!</a></p></div>
     </div>
-  </main>
+  </div>
+</main>
 {% endblock %}

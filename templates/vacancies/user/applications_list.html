@@ -1,5 +1,5 @@
 {% extends 'vacancies/base.html' %}
-{% block title %}Изменить{% endblock %}
+{% block title %}Список откликов{% endblock %}
 {% block container %}
 
 <main class="container mt-3 pb-5">
@@ -8,11 +8,9 @@
     <div class="col-12 col-lg-8">
       <div class="card">
         <div class="card-body px-4 pb-4 tab-content">
-
           {% if applications %}
           <h2 class="h4 pt-2 pb-3">Отклики на вакансию "{{ job_title }}"</h2>
           {% for app in applications %}
-          <!-- Application 1 -->
           <div class="card mt-3">
             <div class="card-body px-4">
               <p class="mb-1 font-weight-bold">{{ app.written_username }}</p>
@@ -21,10 +19,8 @@
               <p class="mb-1">{{ app.written_cover_letter }}</p>
             </div>
           </div>
-          <!-- END Application 1 -->
           {% endfor %}
           {% endif %}
-
         </div>
       </div>
     </div>

@@ -17,15 +17,13 @@
                    class="btn btn-outline-info mt-3 float-right">Добавить вакансию</a>
               </div>
             </div>
-
             {% if vacancies %}
-
             {% for vacancy in vacancies %}
             <div class="card mt-3">
               <div class="card-body px-4">
                 <div class="row align-items-center">
                   <div class="col-6 col-lg-8">
-                    <a href="#" class="mb-1">{{ vacancy.title }}</a>
+                    <a href="{% url 'my_vacancy_form' job_id=vacancy.id %}" class="mb-1">{{ vacancy.title }}</a>
                     <p class="mb-1">
                       <span class="mr-4">{{ vacancy.salary_max }} Р</span>
                       {% if vacancy.res_count > 0 %}
@@ -43,11 +41,9 @@
               </div>
             </div>
             {% endfor %}
-
             {% else %}
             <p>Список ваших вакансий пуст</p>
             {% endif %}
-
           </section>
         </div>
       </div>
