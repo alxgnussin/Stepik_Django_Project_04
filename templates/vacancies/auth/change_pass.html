@@ -2,11 +2,14 @@
 {% block title %}Мой профиль{% endblock %}
 {% block container %}
 <main class="container">
-  <div class="pl-3 mb-5">
-    <a href="#" onclick="history.back();">Назад</a>
-  </div>
   <section class="col-12 col-lg-8 offset-lg-2 mt-5 card">
     <div class="mt-3">
+      <div class="pr-3 mb-3" style="text-align: right;">
+        <a href="#" onclick="history.back();">Назад</a>
+      </div>
+      {% if request.GET.no_change %}
+      <p class="alert alert-danger" role="alert">Текущий пароль введен неверно!</p>
+      {% endif %}
       {% if request.GET.submitted %}
       <p class="alert alert-info" role="alert">Ваш пароль изменен</p>
       {% endif %}

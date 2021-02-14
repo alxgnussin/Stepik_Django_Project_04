@@ -112,6 +112,10 @@ def change_password_view(request):
     current_pass = form.cleaned_data['current_password']
     new_password = form.cleaned_data['password']
     if check_password(current_pass, user.password):
-        user.password = new_password
+        user.set_password(new_password)
         user.save()
+        user = authenticate(request, username=user.username, password=new_password)
+        login(request, user)
+    else:
+        return redirect(reverse('change_password') + '?no_change=True')
     return redirect(reverse('change_password') + '?submitted=True')

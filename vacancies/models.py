@@ -7,7 +7,7 @@ from junior_developers.settings import MEDIA_COMPANY_IMAGE_DIR, MEDIA_SPECIALITY
 
 class Specialty(Model):
     code = CharField(max_length=20)
-    title = CharField(max_length=20)
+    title = CharField(max_length=50)
     picture = ImageField(upload_to=MEDIA_SPECIALITY_IMAGE_DIR)
 
     def __str__(self):
@@ -20,8 +20,8 @@ class Specialty(Model):
 
 
 class Company(Model):
-    title = CharField(max_length=20)
-    location = CharField(max_length=20)
+    title = CharField(max_length=50)
+    location = CharField(max_length=50)
     logo = ImageField(upload_to=MEDIA_COMPANY_IMAGE_DIR, null=True)
     description = TextField()
     employee_count = IntegerField()
@@ -64,7 +64,7 @@ class Application(Model):
 
 
 class Status(Model):
-    title = CharField(max_length=32)
+    title = CharField(max_length=50)
 
     def __str__(self):
         return self.title
@@ -76,7 +76,7 @@ class Status(Model):
 
 
 class Grade(Model):
-    title = CharField(max_length=20)
+    title = CharField(max_length=50)
 
     def __str__(self):
         return self.title

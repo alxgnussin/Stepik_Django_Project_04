@@ -4,12 +4,11 @@
 {% load vacancies_filters %}
 <main class="container mt-3 pb-5">
   <div class="row mt-5">
-    <div class="col-12 col-lg-2">
-      <div class="pl-3 mb-5">
+    <div class="col-12 col-lg-2"></div>
+    <div class="col-12 col-lg-8">
+      <div class="pr-3 mb-3" style="text-align: right;">
         <a href="#" onclick="history.back();">Назад</a>
       </div>
-    </div>
-    <div class="col-12 col-lg-8">
       <section class="pl-3">
         {% if company.logo %}
         <a href="{% url 'company' company_id=vacancy.company.id %}">
