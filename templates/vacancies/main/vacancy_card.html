@@ -12,7 +12,7 @@
         <p class="text-muted pt-1">{{ vacancy.posted }}</p>
       </div>
       <div class="col-12 col-md-4 col-lg-3 d-flex align-items-center">
-        <a href="{% url 'vacancy' job_id=vacancy.id %}">
+        <a href="{% url 'vacancies' specialty_code=vacancy.specialty.code %}">
           <img src="{{ vacancy.specialty.picture.url }}" width="80" height="80" alt="{{ vacancy.specialty.title }}">
         </a>
       </div>

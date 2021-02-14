@@ -56,8 +56,8 @@ class LoginForm(Form):
 
 
 class CompanyForm(Form):
-    title = CharField(max_length=20, label='Название компании')
-    location = CharField(max_length=20, label='География')
+    title = CharField(max_length=50, label='Название компании')
+    location = CharField(max_length=50, label='География')
     logo = ImageField(label='Загрузить новый логотип', required=False)
     description = CharField(widget=Textarea(attrs={'rows': 4}), label='Информация о компании')
     employee_count = IntegerField(label='Количество человек в компании')
