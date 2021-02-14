@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user
-from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.http import HttpResponseNotFound, HttpResponseServerError, Http404
 from django.shortcuts import render
