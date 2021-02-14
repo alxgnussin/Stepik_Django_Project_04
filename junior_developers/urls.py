@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from vacancies.authentication import register_view, auth_view, logout_view
+from vacancies.authentication import register_view, auth_view, logout_view, profile_edit_view, change_password_view
 from vacancies.main import main_view, jobs_views, company_view, vacancy_view, custom_handler404, custom_handler500, \
     company_list_view
 from vacancies.user import my_company_view, my_company_form_view, my_vacancies_list_view, my_vacancy_form_view, \
@@ -35,6 +35,8 @@ urlpatterns = [
     path('signup', register_view, name='signup'),
     path('login', auth_view, name='login'),
     path('logout', logout_view, name='logout'),
+    path('my_profile', profile_edit_view, name='profile'),
+    path('change_password', change_password_view, name='change_password'),
     path('my_company', my_company_view, name='my_company'),
     path('my_company_form', my_company_form_view, name='my_company_form'),
     path('my_vacancy_list', my_vacancies_list_view, name='my_vacancy_list'),

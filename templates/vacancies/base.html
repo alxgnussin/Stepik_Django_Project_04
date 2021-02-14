@@ -40,7 +40,7 @@
               {{ user.first_name }} {{ user.last_name }}
             </button>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Профиль</a>
+              <a class="dropdown-item" href="{% url 'profile' %}">Профиль</a>
               <a class="dropdown-item" href="{% url 'resumes' %}">Резюме</a>
               <a class="dropdown-item" href="{% url 'my_company' %}">Компания</a>
               <div class="dropdown-divider"></div>

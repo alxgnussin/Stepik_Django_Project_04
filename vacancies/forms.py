@@ -103,7 +103,7 @@ class ApplicationForm(Form):
 
 class VacancyForm(Form):
     title = CharField(max_length=50, label='Название вакансии')
-    specialty = ModelChoiceField(required=True, queryset=Specialty.objects, label='Специализация')
+    specialty = ModelChoiceField(queryset=Specialty.objects, label='Специализация')
     skills = CharField(widget=Textarea(attrs={'rows': 2}), label='Требуемые навыки')
     description = CharField(widget=Textarea(attrs={'rows': 6}), label='Описание вакансии')
     salary_min = IntegerField(label='Зарплата от')
@@ -138,9 +138,9 @@ class ResumeForm(Form):
     experience = CharField(widget=Textarea(attrs={'rows': 4}), label='Опыт работы')
     portfolio = CharField(max_length=255, required=False, label='Ссылка на портфолио')
     title = CharField(max_length=50, empty_value='Резюме по умолчанию', label='Желаемая должность')
-    status = ModelChoiceField(required=True, queryset=Status.objects, label='Статус соискателя')
-    grade = ModelChoiceField(required=True, queryset=Grade.objects, label='Квалификация')
-    specialty = ModelChoiceField(required=True, queryset=Specialty.objects, label='Специализация')
+    status = ModelChoiceField(queryset=Status.objects, label='Статус соискателя')
+    grade = ModelChoiceField(queryset=Grade.objects, label='Квалификация')
+    specialty = ModelChoiceField(queryset=Specialty.objects, label='Специализация')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -167,5 +167,51 @@ class ResumeForm(Form):
             'experience',
             'portfolio',
         )
+
+
+class ProfileForm(Form):
+    first_name = CharField(max_length=20, label='Имя')
+    last_name = CharField(max_length=20, label='Фамилия')
+    phone = CharField(required=False, max_length=20, label='Телефон')
+    email = EmailField(required=False, label='Почтовый адрес')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Cохранить', css_class='float-right'))
+
+        self.helper.form_class = "container form-horizontal mt-5"
+        self.helper.label_class = "col-sm-3 col-form-label"
+        self.helper.field_class = "col-lg-9"
+
+
+class ChangePasswordForm(Form):
+    current_password = CharField(widget=PasswordInput, label='Текущий пароль')
+    password = CharField(widget=PasswordInput, label='Новый пароль')
+    confirm = CharField(widget=PasswordInput, label='Проверка')
+
+    def clean_confirm(self):
+        p1 = self.cleaned_data['password']
+        p2 = self.cleaned_data['confirm']
+
+        if p1 != p2:
+            raise ValidationError('Пароли должны совпадать.', code='password_mismatch')
+
+        validate_password(p1)
+
+        return p2
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Сохранить', css_class='float-right'))
+
+        self.helper.form_class = "container form-horizontal mt-5"
+        self.helper.label_class = "col-sm-3 col-form-label"
+        self.helper.field_class = "col-lg-9"
 
 

@@ -101,3 +101,8 @@ class Resume(Model):
     email = EmailField(null=True)
 
 
+class Profile(Model):
+    user = ForeignKey(User, on_delete=CASCADE, related_name='profile')
+    phone = CharField(max_length=20, null=True)
+
+
