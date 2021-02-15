@@ -35,6 +35,7 @@ def register_view(request):
     return redirect('login')
 
 
+@user_passes_test(anonymous_check, login_url='/')
 def auth_view(request):
     if request.method == 'GET':
         form = LoginForm()
@@ -55,6 +56,7 @@ def auth_view(request):
         return render(request, 'vacancies/auth/login.html', {'form': form, 'message': error_msg})
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('main')

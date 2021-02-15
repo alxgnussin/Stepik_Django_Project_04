@@ -76,7 +76,7 @@ def my_vacancy_form_view(request, job_id=None):
     applications = None
 
     if job_id:
-        vacancy = Vacancy.objects.filter(id=job_id).first()
+        vacancy = Vacancy.objects.filter(id=job_id, company__owner__id=user.id).first()
     if vacancy:
         applications = vacancy.applications.all()
 
@@ -135,7 +135,7 @@ def my_resume_form_view(request, resume_id=None):
     user = get_user(request)
     resume = None
     if resume_id:
-        resume = Resume.objects.filter(id=resume_id).first()
+        resume = Resume.objects.filter(id=resume_id, user__id=user.id).first()
     if request.method == 'GET':
         form = ResumeForm()
         if resume:
@@ -190,7 +190,8 @@ def my_resume_form_view(request, resume_id=None):
 
 @login_required
 def applications_list_view(request, job_id):
-    vacancy = Vacancy.objects.filter(id=job_id).first()
+    user = get_user(request)
+    vacancy = Vacancy.objects.filter(id=job_id, company__owner__id=user.id).first()
     applications = vacancy.applications.all()
 
     return render(request, 'vacancies/user/applications_list.html', {
