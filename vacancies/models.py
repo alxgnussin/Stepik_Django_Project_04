@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db.models import Model, CharField, ImageField, TextField, IntegerField, ForeignKey, CASCADE, DateField, \
     EmailField
 
@@ -45,6 +46,10 @@ class Vacancy(Model):
     salary_min = IntegerField()
     salary_max = IntegerField()
     posted = DateField(auto_now=True)
+
+    def clean(self):
+        if self.salary_min > self.salary_max:
+            raise ValidationError('Минимальная зарплата не может быть больше максимальной')
 
     def __str__(self):
         return self.title
