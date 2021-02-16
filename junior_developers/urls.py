@@ -19,19 +19,19 @@ from django.contrib import admin
 from django.urls import path
 
 from vacancies.authentication import register_view, auth_view, logout_view, profile_edit_view, change_password_view
-from vacancies.main import main_view, jobs_views, company_view, vacancy_view, custom_handler404, custom_handler500, \
-    company_list_view
+from vacancies.main import custom_handler404, custom_handler500, \
+    MainView, JobsView, CompanyView, CompanyListView, VacancyView
 from vacancies.user import my_company_view, my_company_form_view, my_vacancies_list_view, my_vacancy_form_view, \
     my_resume_list_view, my_resume_form_view, applications_list_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', main_view, name='main'),
-    path('vacancies/<str:specialty_code>', jobs_views, name='vacancies'),
-    path('vacancies', jobs_views, name='vacancies_all'),
-    path('company/<int:company_id>', company_view, name='company'),
-    path('companies>', company_list_view, name='companies_all'),
-    path('vacancy/<int:job_id>', vacancy_view, name='vacancy'),
+    path('', MainView.as_view(), name='main'),
+    path('vacancies/<str:specialty_code>', JobsView.as_view(), name='vacancies'),
+    path('vacancies', JobsView.as_view(), name='vacancies_all'),
+    path('company/<int:company_id>', CompanyView.as_view(), name='company'),
+    path('companies>', CompanyListView.as_view(), name='companies_all'),
+    path('vacancy/<int:job_id>', VacancyView.as_view(), name='vacancy'),
     path('signup', register_view, name='signup'),
     path('login', auth_view, name='login'),
     path('logout', logout_view, name='logout'),
