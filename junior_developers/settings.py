@@ -121,8 +121,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-DISABLE_COLLECTSTATIC = 1
-
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 
