@@ -213,5 +213,3 @@ class ChangePasswordForm(Form):
         self.helper.form_class = "container form-horizontal mt-5"
         self.helper.label_class = "col-sm-3 col-form-label"
         self.helper.field_class = "col-lg-9"
-
-

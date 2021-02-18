@@ -1,10 +1,12 @@
 from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.views import View
 
 from vacancies.forms import RegisterForm, LoginForm, ProfileForm, ChangePasswordForm
 from vacancies.models import Profile
@@ -27,7 +29,7 @@ def register_view(request):
     password = form.cleaned_data['password']
     try:
         User.objects.create_user(
-            username=username, first_name=first_name, last_name=last_name, password=password
+            username=username, first_name=first_name, last_name=last_name, password=password,
         )
     except IntegrityError:
         error_msg = 'Такой логин уже существует!'
@@ -62,12 +64,12 @@ def logout_view(request):
     return redirect('main')
 
 
-@login_required
-def profile_edit_view(request):
-    user = get_user(request)
-    profile = Profile.objects.filter(user=user).first()
-    form = ProfileForm()
-    if request.method == 'GET':
+class MyProfileForm(View, LoginRequiredMixin):
+
+    def get(self, request):
+        user = get_user(request)
+        profile = Profile.objects.filter(user=user).first()
+        form = ProfileForm()
         form.initial = {
             'first_name': user.first_name,
             'last_name': user.last_name,
@@ -78,46 +80,56 @@ def profile_edit_view(request):
                 'first_name': user.first_name,
                 'last_name': user.last_name,
                 'email': user.email,
-                'phone': profile.phone
+                'phone': profile.phone,
             }
         return render(request, 'vacancies/auth/profile.html', {'form': form})
 
-    form = ProfileForm(request.POST)
-    if not form.is_valid():
-        return render(request, 'vacancies/auth/profile.html', {'form': form})
-    if profile:
-        user.first_name = form.cleaned_data['first_name']
-        user.last_name = form.cleaned_data['last_name']
-        user.email = form.cleaned_data['email']
-        profile.phone = form.cleaned_data['phone']
-        profile.user = user
-    else:
-        user.email = form.cleaned_data['email']
-        profile = Profile(
-            user=user,
-            phone=form.cleaned_data['phone'],
-        )
-    user.save()
-    profile.save()
-    return redirect(reverse('profile') + '?submitted=True')
+    def post(self, request):
+        user = get_user(request)
+        profile = Profile.objects.filter(user=user).first()
+
+        form = ProfileForm(request.POST)
+        if not form.is_valid():
+            return render(request, 'vacancies/auth/profile.html', {'form': form})
+        if profile:
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            profile.phone = form.cleaned_data['phone']
+            profile.user = user
+        else:
+            user.email = form.cleaned_data['email']
+            profile = Profile(
+                user=user,
+                phone=form.cleaned_data['phone'],
+            )
+        user.save()
+        profile.save()
+        return redirect(reverse('profile') + '?submitted=True')
 
 
-@login_required
-def change_password_view(request):
-    if request.method == 'GET':
+class ChangePassword(View, LoginRequiredMixin):
+
+    def get(self, request):
         form = ChangePasswordForm()
         return render(request, 'vacancies/auth/change_pass.html', {'form': form})
-    user = get_user(request)
-    form = ChangePasswordForm(request.POST)
-    if not form.is_valid():
-        return render(request, 'vacancies/auth/change_pass.html', {'form': form})
-    current_pass = form.cleaned_data['current_password']
-    new_password = form.cleaned_data['password']
-    if check_password(current_pass, user.password):
-        user.set_password(new_password)
-        user.save()
-        user = authenticate(request, username=user.username, password=new_password)
-        login(request, user)
-    else:
-        return redirect(reverse('change_password') + '?no_change=True')
-    return redirect(reverse('change_password') + '?submitted=True')
+
+    def post(self, request):
+        user = get_user(request)
+        form = ChangePasswordForm(request.POST)
+
+        if not form.is_valid():
+            return render(request, 'vacancies/auth/change_pass.html', {'form': form})
+
+        current_pass = form.cleaned_data['current_password']
+        new_password = form.cleaned_data['password']
+
+        if check_password(current_pass, user.password):
+            user.set_password(new_password)
+            user.save()
+            user = authenticate(request, username=user.username, password=new_password)
+            login(request, user)
+        else:
+            return redirect(reverse('change_password') + '?no_change=True')
+
+        return redirect(reverse('change_password') + '?submitted=True')

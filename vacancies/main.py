@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user
 from django.db.models import Count, Q
-from django.http import HttpResponseNotFound, HttpResponseServerError, Http404
+from django.http import HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import render
 
 from vacancies.forms import ApplicationForm
@@ -13,17 +13,14 @@ def main_view(request):
 
     return render(request, 'vacancies/main/index.html', {
         'specialties': specialties,
-        'companies': companies
+        'companies': companies,
     })
 
 
 def jobs_views(request, specialty_code=None):
     specialty = None
     if specialty_code:
-        try:
-            specialty = Specialty.objects.get(code=specialty_code)
-        except:
-            raise Http404()
+        specialty = Specialty.objects.get_object_or_404(code=specialty_code)
         vacancies = Vacancy.objects.filter(specialty__code=specialty_code).all()
     else:
         search = request.GET.get('query')
@@ -40,10 +37,7 @@ def jobs_views(request, specialty_code=None):
 
 
 def company_view(request, company_id):
-    try:
-        company = Company.objects.get(id=company_id)
-    except:
-        raise Http404()
+    company = Company.objects.get_object_or_404(id=company_id)
     vacancies = Vacancy.objects.filter(company__id=company_id).all()
 
     return render(request, 'vacancies/main/company.html', {
@@ -58,17 +52,14 @@ def company_list_view(request):
 
 
 def vacancy_view(request, job_id):
-    try:
-        vacancy = Vacancy.objects.get(id=job_id)
-    except:
-        raise Http404()
+    vacancy = Vacancy.objects.get_object_or_404(id=job_id)
     user = get_user(request)
     if request.method == 'GET':
         form = ApplicationForm()
         if not user.is_anonymous:
             written_username = f'{user.first_name} {user.last_name}'
             form.initial = {
-                'written_username': written_username
+                'written_username': written_username,
             }
             return render(request, 'vacancies/main/vacancy.html', {'vacancy': vacancy, 'form': form})
 
@@ -82,7 +73,7 @@ def vacancy_view(request, job_id):
         written_phone=form.cleaned_data['written_phone'],
         written_cover_letter=form.cleaned_data['written_cover_letter'],
         vacancy=vacancy,
-        user=user
+        user=user,
     )
 
     return render(request, 'vacancies/main/sent.html', {'job_id': job_id})

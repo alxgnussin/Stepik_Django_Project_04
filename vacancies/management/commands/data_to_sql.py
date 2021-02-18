@@ -13,7 +13,7 @@ class Command(BaseCommand):
             new_item = Specialty(
                 code=item.code,
                 title=item.title,
-                picture=item.picture
+                picture=item.picture,
             )
             new_item.save()
 
@@ -25,7 +25,7 @@ class Command(BaseCommand):
                 location=item.location,
                 logo=item.logo,
                 description=item.description,
-                employee_count=item.employee_count
+                employee_count=item.employee_count,
             )
             new_item.save()
 
@@ -42,7 +42,6 @@ class Command(BaseCommand):
                 description=item.description,
                 salary_min=item.salary_from,
                 salary_max=item.salary_to,
-                posted=item.posted
+                posted=item.posted,
             )
             new_item.save()
-

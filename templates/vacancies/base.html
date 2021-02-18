@@ -33,20 +33,19 @@
         </li>
       </ul>
       <ul class="navbar-nav col-2 justify-content-end">
-        <li class="nav-item active">
+        <li class="nav-item dropdown active">
           {% if request.user.is_authenticated %}
-          <div class="dropdown">
-            <button class="btn dropdown-toggle font-weight-bold" type="button" id="dropdownMenu2" data-toggle="dropdown">
+            <button class="btn dropdown-toggle font-weight-bold" role="button" id="userMenu" data-toggle="dropdown"
+                    data-target="#userMenuDropdown">
               {{ user.first_name }} {{ user.last_name }}
             </button>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu" aria-labelledby="userMenu" id="userMenuDropdown">
               <a class="dropdown-item" href="{% url 'profile' %}">Профиль</a>
               <a class="dropdown-item" href="{% url 'resumes' %}">Резюме</a>
               <a class="dropdown-item" href="{% url 'my_company' %}">Компания</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{% url 'logout' %}">Выход</a>
             </div>
-          </div>
           {% else %}
           <a href="{% url 'login' %}" class="nav-link font-weight-bold">Вход</a>
           {% endif %}

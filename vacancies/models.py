@@ -67,6 +67,9 @@ class Application(Model):
     vacancy = ForeignKey(Vacancy, on_delete=CASCADE, related_name='applications')
     user = ForeignKey(User, on_delete=CASCADE, related_name='applications', null=True)
 
+    def __str__(self):
+        return self.title
+
 
 class Status(Model):
     title = CharField(max_length=50)
@@ -105,9 +108,13 @@ class Resume(Model):
     phone = CharField(max_length=20, default='+7')
     email = EmailField(null=True)
 
+    def __str__(self):
+        return self.title
+
 
 class Profile(Model):
     user = ForeignKey(User, on_delete=CASCADE, related_name='profile')
     phone = CharField(max_length=20, null=True)
 
-
+    def __str__(self):
+        return self.title
