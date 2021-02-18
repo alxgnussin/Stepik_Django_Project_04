@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user
 from django.db.models import Count, Q
 from django.http import HttpResponseNotFound, HttpResponseServerError
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from vacancies.forms import ApplicationForm
 from vacancies.models import Specialty, Company, Vacancy, Application
@@ -20,7 +20,7 @@ def main_view(request):
 def jobs_views(request, specialty_code=None):
     specialty = None
     if specialty_code:
-        specialty = Specialty.objects.get_object_or_404(code=specialty_code)
+        specialty = get_object_or_404(Specialty, code=specialty_code)
         vacancies = Vacancy.objects.filter(specialty__code=specialty_code).all()
     else:
         search = request.GET.get('query')
@@ -37,7 +37,7 @@ def jobs_views(request, specialty_code=None):
 
 
 def company_view(request, company_id):
-    company = Company.objects.get_object_or_404(id=company_id)
+    company = get_object_or_404(Company, id=company_id)
     vacancies = Vacancy.objects.filter(company__id=company_id).all()
 
     return render(request, 'vacancies/main/company.html', {
@@ -52,7 +52,7 @@ def company_list_view(request):
 
 
 def vacancy_view(request, job_id):
-    vacancy = Vacancy.objects.get_object_or_404(id=job_id)
+    vacancy = get_object_or_404(Vacancy, id=job_id)
     user = get_user(request)
     if request.method == 'GET':
         form = ApplicationForm()
