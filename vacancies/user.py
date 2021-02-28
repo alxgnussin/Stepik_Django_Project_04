@@ -2,27 +2,40 @@ from django.contrib.auth import get_user
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.urls import reverse
 from django.views import View
+from django.views.generic import ListView
 
 from vacancies.forms import CompanyForm, VacancyForm, ResumeForm
 from vacancies.models import Company, Vacancy, Resume
 
 
-@login_required
-def my_company_view(request):
-    user = get_user(request)
-    if not user.companies.all():
-        return render(request, 'vacancies/user/company_create.html')
-    return redirect('my_company_form')
+class MyCompaniesList(ListView, LoginRequiredMixin):
+    template_name = 'vacancies/user/companies.html'
+
+    def get_queryset(self):
+        queryset = Company.objects.filter(owner=self.request.user).all()
+        if not queryset:
+            return render(self.request, 'vacancies/user/company_create.html')
+        return queryset
+
+
+
+
+# @login_required
+# def my_company_view(request):
+#     user = request.user
+#     if not user.companies.all():
+#         return render(request, 'vacancies/user/company_create.html')
+#     return redirect('my_company_form')
 
 
 class MyCompanyForm(View, LoginRequiredMixin):
 
     @staticmethod
     def get_company(request):
-        user = get_user(request)
+        user = request.user
         company = user.companies.first()
         return company
 
@@ -69,7 +82,7 @@ class MyCompanyForm(View, LoginRequiredMixin):
 
 @login_required
 def my_vacancies_list_view(request):
-    user = get_user(request)
+    user = request.user
     user_company = user.companies.first()
     vacancies_list = None
     if user_company:
@@ -82,7 +95,7 @@ class MyVacancyForm(View, LoginRequiredMixin):
 
     @staticmethod
     def get_vacancy(request, job_id):
-        user = get_user(request)
+        user = request.user
         vacancy = Vacancy.objects.filter(id=job_id, company__owner__id=user.id).first()
         return vacancy
 
@@ -107,7 +120,7 @@ class MyVacancyForm(View, LoginRequiredMixin):
         return render(request, 'vacancies/user/vacancy_edit.html', {'form': form})
 
     def post(self, request, job_id=None):
-        user = get_user(request)
+        user = request.user
         user_company = user.companies.first()
         vacancy = None
 
@@ -142,7 +155,7 @@ class MyVacancyForm(View, LoginRequiredMixin):
 
 @login_required
 def my_resume_list_view(request):
-    user = get_user(request)
+    user = request.user
     resumes_list = user.resumes.all()
     if len(resumes_list) > 0:
         return render(request, 'vacancies/user/resumes.html', {'resumes_list': resumes_list})
@@ -153,7 +166,7 @@ class MyResumeForm(View, LoginRequiredMixin):
 
     @staticmethod
     def get_resume(request, resume_id):
-        user = get_user(request)
+        user = request.user
         resume = Resume.objects.filter(id=resume_id, user__id=user.id).first()
         return resume
 
@@ -220,7 +233,7 @@ class MyResumeForm(View, LoginRequiredMixin):
 
 @login_required
 def applications_list_view(request, job_id):
-    user = get_user(request)
+    user = request.user
     vacancy = Vacancy.objects.filter(id=job_id, company__owner__id=user.id).first()
     applications = vacancy.applications.all()
 

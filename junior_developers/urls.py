@@ -20,8 +20,8 @@ from django.urls import path, include
 from vacancies.authentication import register_view, auth_view, logout_view, MyProfileForm, ChangePassword
 from vacancies.main import main_view, jobs_views, company_view, vacancy_view, custom_handler404, custom_handler500, \
     company_list_view
-from vacancies.user import my_company_view, my_vacancies_list_view, my_resume_list_view, applications_list_view, \
-    MyCompanyForm, MyVacancyForm, MyResumeForm
+from vacancies.user import my_vacancies_list_view, my_resume_list_view, applications_list_view, \
+    MyCompanyForm, MyVacancyForm, MyResumeForm, MyCompaniesList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,7 +36,8 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('my_profile', MyProfileForm.as_view(), name='profile'),
     path('change_password/', ChangePassword.as_view(), name='change_password'),
-    path('my_company/', my_company_view, name='my_company'),
+    # path('my_company/', my_company_view, name='my_company'),
+    path('my_company/list/', MyCompaniesList.as_view(), name='my_companies'),
     path('my_company_form/', MyCompanyForm.as_view(), name='my_company_form'),
     path('my_vacancy_list/', my_vacancies_list_view, name='my_vacancy_list'),
     path('my_vacancy_form/', MyVacancyForm.as_view(), name='my_vacancy_create'),

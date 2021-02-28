@@ -108,6 +108,7 @@ class VacancyForm(Form):
     description = CharField(widget=Textarea(attrs={'rows': 6}), label='Описание вакансии')
     salary_min = IntegerField(label='Зарплата от')
     salary_max = IntegerField(label='Зарплата до')
+    location = CharField(max_length=100, label='Регион, город')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -127,6 +128,7 @@ class VacancyForm(Form):
             ),
             'skills',
             'description',
+            'location',
         )
 
 

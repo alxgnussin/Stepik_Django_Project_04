@@ -67,7 +67,7 @@ def logout_view(request):
 class MyProfileForm(View, LoginRequiredMixin):
 
     def get(self, request):
-        user = get_user(request)
+        user = request.user
         profile = Profile.objects.filter(user=user).first()
         form = ProfileForm()
         form.initial = {
@@ -85,7 +85,7 @@ class MyProfileForm(View, LoginRequiredMixin):
         return render(request, 'vacancies/auth/profile.html', {'form': form})
 
     def post(self, request):
-        user = get_user(request)
+        user = request.user
         profile = Profile.objects.filter(user=user).first()
 
         form = ProfileForm(request.POST)
@@ -115,7 +115,7 @@ class ChangePassword(View, LoginRequiredMixin):
         return render(request, 'vacancies/auth/change_pass.html', {'form': form})
 
     def post(self, request):
-        user = get_user(request)
+        user = request.user
         form = ChangePasswordForm(request.POST)
 
         if not form.is_valid():

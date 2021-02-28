@@ -46,6 +46,7 @@ class Vacancy(Model):
     salary_min = IntegerField()
     salary_max = IntegerField()
     posted = DateField(auto_now=True)
+    location = CharField(max_length=100, default='', verbose_name='Регион, город')
 
     def clean(self):
         if self.salary_min > self.salary_max:
